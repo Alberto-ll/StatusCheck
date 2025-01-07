@@ -1,6 +1,5 @@
 import reflex as rx
 from ..services.ipManagment import Manejador
-from ..services.pingManagment import Ping
 from ..models.model import Direcciones
 
 

@@ -3,14 +3,11 @@
 import reflex as rx
 from .components.form import formulario
 from .components.tabla import tabla
-from .services.ipManagment import Manejador
+
 from rxconfig import config
 
-class State(rx.State):
-    def on_load(self):
-        return Manejador.manageTaskping()
 
-
+# Paguina inical 
 def main():
     return rx.container(
         formulario(),
