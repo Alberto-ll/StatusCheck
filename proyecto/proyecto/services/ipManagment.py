@@ -1,4 +1,5 @@
 import reflex as rx
+import re
 from ..models.model import Direcciones
 import subprocess
 import asyncio
@@ -7,6 +8,13 @@ class Manejador(rx.State):
 
     # donde se cargan las direcciones
     direcciones:list[Direcciones]
+    
+    
+    def es_ip_valida(s):
+    # Expresión regular para validar una dirección IPv4
+        return bool(re.match(r'^(\d{1,3}\.){3}\d{1,3}$', s)) and all(0 <= int(i) <= 255 for i in s.split('.'))
+    
+    
     
     # añade una ip a la base de datos
     def addIp(self, form_data):
@@ -42,26 +50,18 @@ class Manejador(rx.State):
             async with self:
                 for x in self.direcciones:
                     estado = self.defineEstado(x.ip)
-                    if estado ==True:
+                    if estado != x.estado:
                         with rx.session() as session:
                             direc = session.exec(
                                 Direcciones.select().where(
                                     Direcciones.ip == x.ip
                                 )
                             ).first()
-                            direc.estado= True
+                            direc.estado = estado
                             session.add(direc)
                             session.commit()
-                    elif estado == False:
-                        with rx.session() as session:
-                            direc = session.exec(
-                                Direcciones.select().where(
-                                    Direcciones.ip == x.ip
-                                )
-                            ).first()
-                            direc.estado= False
-                            session.add(direc)
-                            session.commit()
+                    
+
             await asyncio.sleep(10)
             async with self:
                 self.loadIp()
