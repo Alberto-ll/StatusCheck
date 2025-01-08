@@ -3,8 +3,10 @@
 import reflex as rx
 from .components.form import formulario
 from .components.tabla import tabla
+from .services.ipManagment import Manejador
 
 from rxconfig import config
+    
 
 
 # Paguina inical 
@@ -16,4 +18,4 @@ def main():
     
     
 app = rx.App()
-app.add_page(main, route="/")
+app.add_page(main, route="/",on_load=Manejador.estadoUpdate())

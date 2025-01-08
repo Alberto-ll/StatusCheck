@@ -42,7 +42,17 @@ class Manejador(rx.State):
             async with self:
                 for x in self.direcciones:
                     estado = self.defineEstado(x.ip)
-                    if estado:
+                    if estado ==True:
+                        with rx.session() as session:
+                            direc = session.exec(
+                                Direcciones.select().where(
+                                    Direcciones.ip == x.ip
+                                )
+                            ).first()
+                            direc.estado= True
+                            session.add(direc)
+                            session.commit()
+                    elif estado == False:
                         with rx.session() as session:
                             direc = session.exec(
                                 Direcciones.select().where(
@@ -52,14 +62,6 @@ class Manejador(rx.State):
                             direc.estado= False
                             session.add(direc)
                             session.commit()
-                    else:
-                        with rx.session() as session:
-                            direc = session.exec(
-                                Direcciones.select().where(
-                                    Direcciones.ip == x.ip
-                                )
-                            ).first()
-                            direc.estado= False
-                            session.add(direc)
-                            session.commit()
-            asyncio.sleep(10)
+            await asyncio.sleep(10)
+            async with self:
+                self.loadIp()
