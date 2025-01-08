@@ -24,6 +24,12 @@ def constructorRow(direcciones: Direcciones):
         rx.table.cell(direcciones.sector),
         rx.table.cell(direcciones.ip),
         rx.table.cell(changeIcon(direcciones.estado)),
+        rx.table.cell(
+            rx.button(
+                "borrar",
+                on_click=Manejador.deleteIp(direcciones.ip),
+            ),
+        ),
 
     )
 
@@ -37,6 +43,7 @@ def tabla():
                 rx.table.column_header_cell("Sector"),
                 rx.table.column_header_cell("ip"),
                 rx.table.column_header_cell("estado"),
+                rx.table.column_header_cell("Borrrar")
             )
         ),
         rx.table.body(

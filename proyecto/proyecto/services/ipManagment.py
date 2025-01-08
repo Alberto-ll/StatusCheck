@@ -10,11 +10,14 @@ class Manejador(rx.State):
     direcciones:list[Direcciones]
     
     
-    def es_ip_valida(s):
-    # Expresión regular para validar una dirección IPv4
-        return bool(re.match(r'^(\d{1,3}\.){3}\d{1,3}$', s)) and all(0 <= int(i) <= 255 for i in s.split('.'))
     
-    
+    def deleteIp(self,ip):
+        with rx.session() as session:
+            direc = session.exec(Direcciones.select().where(Direcciones.ip == ip)).first()
+            session.delete(direc)
+            session.commit()
+            
+        self.loadIp()
     
     # añade una ip a la base de datos
     def addIp(self, form_data):
@@ -62,6 +65,6 @@ class Manejador(rx.State):
                             session.commit()
                     
 
-            await asyncio.sleep(10)
+            await asyncio.sleep(5)
             async with self:
                 self.loadIp()
