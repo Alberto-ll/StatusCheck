@@ -1,12 +1,14 @@
 import reflex as rx
-
+from ..components.navbar import nav
 
 
 
 
 
 def dashboardPage():
-   pass 
+   return rx.box(
+      nav(),
+   )
 
 
 
