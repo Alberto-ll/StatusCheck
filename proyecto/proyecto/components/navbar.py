@@ -9,10 +9,10 @@ def nav_link(text:str, url:str):
 def nav():
     return rx.hstack(
         rx.hstack(
-            rx.heading("Titulo")
+            rx.heading("Ayuda dispositivos")
         ),
         rx.hstack(
-            nav_link("home","/"),
+            nav_link("Dashboard","/"),
             nav_link("Alta oficina","/altaOficina"),
             nav_link("Alta rack","/altaRack"),
             justify="end",

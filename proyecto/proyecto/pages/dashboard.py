@@ -2,6 +2,7 @@ import reflex as rx
 from ..components.navbar import nav 
 from ..components.form import formulario
 from ..components.tabla import  tablaRack, tablaoficinaDash, tablalistadoDash
+from ..services.Managment import MainControler
 
 
 
@@ -19,7 +20,6 @@ def dashboardPage():
                rx.center(
                   rx.heading("Raks"),   
                ),
-               
                tablaRack(),
             ),
             rx.card(

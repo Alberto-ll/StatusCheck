@@ -1,5 +1,5 @@
 import reflex as rx
-
+from ..services.Managment import MainControler
 #from ..services.ipManagment import Manejador
 
 def formulario():
@@ -73,8 +73,9 @@ def formularioAltaRack():
             rx.center(
                 rx.heading("Alta rack")
             ),
+            rx.form(
             rx.input(
-                placeholder="Nombre oficina",
+                placeholder="Nombre del rack",
                 name="nombre",
             ),
             rx.input(
@@ -85,5 +86,9 @@ def formularioAltaRack():
             rx.button(
                 "Cargar",
             ),
-        )
+            on_submit=MainControler.añadirRack,
+            reset_on_submit=True,
+            ),
+
+        ),
     )
