@@ -3,4 +3,4 @@ from ..components.navbar import nav
 
 
 def officedisplay():
-    pass
+    return rx.heading("HOLA")

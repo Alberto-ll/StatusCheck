@@ -4,7 +4,11 @@ import reflex as rx
 
 from proyecto.pages.dashboard import dashboardPage
 from proyecto.pages.officeDisplay import officedisplay
-
+from proyecto.pages.altaOficina import altaOficinaPage
+from proyecto.pages.altaRack import altaRackPage
 
 app = rx.App()
 app.add_page(dashboardPage,route="/")
+app.add_page(officedisplay, route="/officeD")
+app.add_page(altaOficinaPage,route="/altaOficina")
+app.add_page(altaRackPage,route="/altaRack")

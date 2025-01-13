@@ -13,13 +13,16 @@ def nav():
         ),
         rx.hstack(
             nav_link("home","/"),
-            nav_link("TEST","/"),
+            nav_link("Alta oficina","/altaOficina"),
+            nav_link("Alta rack","/altaRack"),
             justify="end",
             spacing="7",
             padding="12px",
             
+            
         ),
         align_items="center",
         justify="between",
+        background_color=rx.color("grass", 7),
     ),
     

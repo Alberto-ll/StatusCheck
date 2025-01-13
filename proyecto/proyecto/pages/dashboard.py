@@ -1,5 +1,7 @@
 import reflex as rx
-from ..components.navbar import nav
+from ..components.navbar import nav 
+from ..components.form import formulario
+from ..components.tabla import  tablaRack, tablaoficinaDash, tablalistadoDash
 
 
 
@@ -8,6 +10,33 @@ from ..components.navbar import nav
 def dashboardPage():
    return rx.box(
       nav(),
+      rx.box(
+         
+         formulario(),
+         
+         rx.grid(
+            rx.card(
+               rx.center(
+                  rx.heading("Raks"),   
+               ),
+               
+               tablaRack(),
+            ),
+            rx.card(
+               rx.center(
+                  rx.heading("Oficina"),   
+               ),
+               tablaoficinaDash(),
+            ),
+            rx.card(
+               rx.center(
+                  rx.heading("Computadoras offline"),   
+               ),
+               tablalistadoDash(),
+            ),
+            columns="3"
+            ),
+         ),
    )
 
 
