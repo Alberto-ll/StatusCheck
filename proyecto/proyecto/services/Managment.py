@@ -76,9 +76,13 @@ from ..models.model import Oficinas, Rack, Dispositivo
                 
 
 class MainControler(rx.State):
+    # listas de las computadoras e impresoras que hay en la base de datos (se usa parra poder trabajar con los datos)
     dispositivosLista:list[Dispositivo]
+    # lista de racks que se carga de la base de datos
     rackLista:list[Rack]
+    # lista de oficinas que se carga de la base de datos
     oficinasLista:list[Oficinas]
+    # lista de nombres de oficina para poder mostrarlos en el dashboard
     listaNombresOficinas : list[str]
     
     def defineEstado(self,ip):
@@ -102,6 +106,7 @@ class MainControler(rx.State):
                 Rack.select()
             ).all()
     
+    # Al cargar las oficinas se actualiza la lista 
     def cargarOficinas(self):
         with rx.session() as session:
             self.oficinasLista = session.exec(
@@ -131,8 +136,8 @@ class MainControler(rx.State):
             ))
             session.commit()
         self.cargarOficinas()
-        #self.actualizarListaNombres(form_data["nombre"])
-    
+        
+    # Limpiaa y acddtualiza la lista con los nombres de la oficina
     def cargarlistaNombres(self):
         self.listaNombresOficinas.clear()
         for x in self.oficinasLista:
