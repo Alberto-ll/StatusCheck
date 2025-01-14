@@ -6,15 +6,15 @@ from ..services.Managment import MainControler
 
 # Cambiar
 
-def changeIcon(estado):
+def changeIconRack(estado):
     return rx.box(
         rx.cond(
                 (estado),
-                rx.icon(tag="circle-check-big",color="green")
+                rx.icon(tag="server",color="green")
             ),
         rx.cond(
-                (estado),
-                rx.icon(tag="unplug",color="RED"),
+                (~estado),
+                rx.icon(tag="server-off",color="RED"),
             ),
 
     )
@@ -55,7 +55,7 @@ def tablaRackConstructor(rack:Rack):
     return rx.table.row(
         rx.table.cell(rack.nombre),
         rx.table.cell(rack.ip),
-        rx.table.cell(rack.estado)
+        rx.table.cell(changeIconRack(rack.estado))
     )
 
 
@@ -82,7 +82,8 @@ def tablaRack():
 def tablaOficinasConstructor(oficina:Oficinas):
     return rx.table.row(
         rx.table.cell(oficina.nombre),
-        rx.table.cell(oficina.numeroDispositivos)
+        rx.table.cell(oficina.computadoras),
+        rx.table.cell(oficina.impresoras),
     )
 
 def tablaoficinaDash():
@@ -90,7 +91,8 @@ def tablaoficinaDash():
         rx.table.header(
             rx.table.row(
                 rx.table.column_header_cell("oficina"),
-                rx.table.column_header_cell("Cantidad de computadoras"),
+                rx.table.column_header_cell("computadoras"),
+                rx.table.column_header_cell("impresoras"),
             ),
         ),
         rx.table.body(
@@ -98,7 +100,7 @@ def tablaoficinaDash():
                 MainControler.oficinasLista, tablaOficinasConstructor,
             )
         ),
-        on_mount=MainControler.oficinasLista,
+        on_mount=MainControler.cargarOficinas
     )
     
 def tablalistadoDash():

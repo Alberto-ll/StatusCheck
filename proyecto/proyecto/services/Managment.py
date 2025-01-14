@@ -121,7 +121,8 @@ class MainControler(rx.State):
         with rx.session() as session:
             session.add(Oficinas(
                 nombre=form_data["nombre"],
-                numeroDispositivos= 0
+                computadoras=0,
+                impresoras=0,
             ))
             session.commit()
         self.cargarOficinas()

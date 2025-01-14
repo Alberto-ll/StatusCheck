@@ -57,16 +57,20 @@ def formularioAltaOficina():
             rx.center(
                 rx.heading("Alta oficina")
             ),
+            rx.form(
             rx.input(
                 placeholder="Nombre oficina",
                 name="nombre"   
             ),
             
             rx.button(
+                "Cargar"
+            ),
             on_submit=MainControler.altaOficina,
             reset_on_submit=True,
-            )
-        )
+            ),
+
+        ),
     )
     
 def formularioAltaRack():
