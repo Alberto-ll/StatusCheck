@@ -30,7 +30,7 @@ def dashboardPage():
             ),
             rx.card(
                rx.center(
-                  rx.heading("Computadoras offline"),   
+                  rx.heading("Dispositivos offline"),   
                ),
                tablalistadoDash(),
             ),

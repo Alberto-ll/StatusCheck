@@ -2,7 +2,7 @@
 # import re
 # from ..models.model import Direcciones
 # import subprocess
-# import asyncio
+import asyncio
 import subprocess
 import reflex as rx
 from ..models.model import Oficinas, Rack, Dispositivo
@@ -50,28 +50,28 @@ from ..models.model import Oficinas, Rack, Dispositivo
 #             return False
         
 
-#     # Actualizar el estado 
-#     @rx.event(background=True)
-#     async def estadoUpdate(self):
-#         while True:
-#             async with self:
-#                 for x in self.direcciones:
-#                     estado = self.defineEstado(x.ip)
-#                     if estado != x.estado:
-#                         with rx.session() as session:
-#                             direc = session.exec(
-#                                 Direcciones.select().where(
-#                                     Direcciones.ip == x.ip
-#                                 )
-#                             ).first()
-#                             direc.estado = estado
-#                             session.add(direc)
-#                             session.commit()
+    # Actualizar el estado 
+    # @rx.event(background=True)
+    # async def estadoUpdate(self):
+    #     while True:
+    #         async with self:
+    #             for x in self.direcciones:
+    #                 estado = self.defineEstado(x.ip)
+    #                 if estado != x.estado:
+    #                     with rx.session() as session:
+    #                         direc = session.exec(
+    #                             Direcciones.select().where(
+    #                                 Direcciones.ip == x.ip
+    #                             )
+    #                         ).first()
+    #                         direc.estado = estado
+    #                         session.add(direc)
+    #                         session.commit()
                     
 
-#             await asyncio.sleep(5)
-#             async with self:
-#                 self.loadIp()
+    #         await asyncio.sleep(5)
+    #         async with self:
+    #             self.loadIp()
                 
                 
 
@@ -79,6 +79,7 @@ class MainControler(rx.State):
     dispositivosLista:list[Dispositivo]
     rackLista:list[Rack]
     oficinasLista:list[Oficinas]
+    listaNombresOficinas : list[str]
     
     def defineEstado(self,ip):
         res = subprocess.run(["ping", ip, "-c", "1"],stdout=subprocess.DEVNULL)
@@ -106,13 +107,17 @@ class MainControler(rx.State):
             self.oficinasLista = session.exec(
                 Oficinas.select()
             ).all()
+        self.cargarlistaNombres()
+        
             
     def altaRack(self,form_data):
         with rx.session() as session:
             session.add(Rack(
                 nombre=form_data["nombre"],
                 ip=form_data["ip"],
-                estado=self.defineEstado(form_data["ip"])
+                estado=self.defineEstado(form_data["ip"]),
+                
+                
             ))
             session.commit()
         self.cargarRacks()
@@ -126,3 +131,33 @@ class MainControler(rx.State):
             ))
             session.commit()
         self.cargarOficinas()
+        #self.actualizarListaNombres(form_data["nombre"])
+    
+    def cargarlistaNombres(self):
+        self.listaNombresOficinas.clear()
+        for x in self.oficinasLista:
+            self.listaNombresOficinas.append(x.nombre)
+        
+        
+    @rx.event(background=True)
+    async def ActualizarEstado(self):
+        while True:
+            # Actualizacion de estado de los racks
+            async with self:
+                for x in self.rackLista:
+                    estado = self.defineEstado(x.ip)
+                    if estado != x.estado:
+                        with rx.session() as session:
+                            ra = session.exec(
+                                Rack.select().where(
+                                    Rack.ip == x.ip
+                                )
+                            ).first()
+                            ra.estado = estado
+                            session.add(ra)
+                            session.commit()
+                    
+            #
+            await asyncio.sleep(5)
+            async with self:
+                self.cargarRacks()

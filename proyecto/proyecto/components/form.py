@@ -1,6 +1,10 @@
 import reflex as rx
+from ..models.model import Oficinas
 from ..services.Managment import MainControler
 #from ..services.ipManagment import Manejador
+
+
+
 
 def formulario():
     return rx.card(
@@ -22,14 +26,15 @@ def formulario():
                 rx.text("Ingrese de que oficina es el dispositivo:"),
                 rx.select(
                     #recuperar las oficinas de la base de datos y permitir que una sea seleccionada
-                    ["oficina1","oficin2"],
+                    MainControler.listaNombresOficinas,
+                    placeholder="Ingrese Oficina"
                     
                     #margin="10px",
                 ),
-                rx.text("Ingrese tipo de dispositivo:"),
                 rx.select(
-                    
-                  ["computadora","impresora"],
+                    ["Impresora","Computadora"],
+                    placeholder="Ingrese tipo de dispositivo:",
+
                   #margin="10px",
                 ),
                 rx.spacer(),
