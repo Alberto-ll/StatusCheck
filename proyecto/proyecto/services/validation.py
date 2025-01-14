@@ -3,19 +3,18 @@ import re
 
 
 class FormValidation(rx.State):
-    sector:str
-    ip:str
+
     
     # Invalidar el formulario si el campo sector esta vacio
-    def sector_empty(self):
+    def nombre_empty(self):
         pass
     
     # Invalidar el formulario si el nombre no es valido | el nombre debe ser alfanumerico
-    def invalid_sector(self):
+    def nombre_invalid(self):
         pass
     
     # Invalidar el formmulario si el sector ya  existe
-    def sector_already_exist(self):
+    def oficina_exist(self):
         pass
     
     # Invalidar formualrio si la IP ya esta dada de alta
