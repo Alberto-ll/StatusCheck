@@ -13,7 +13,7 @@ def changeIcon(estado):
                 rx.icon(tag="circle-check-big",color="green")
             ),
         rx.cond(
-                (~estado),
+                (estado),
                 rx.icon(tag="unplug",color="RED"),
             ),
 
@@ -51,13 +51,12 @@ def changeIcon(estado):
 #     )
 
 
-def constructorRacksTabla(rackLista:list):
-    
+def tablaRackConstructor(rack:Rack):
     return rx.table.row(
-
-        rx.table.cell(rackLista.nombre),
-        rx.table.cell(changeIcon(rackLista.estado)),
-        ),
+        rx.table.cell(rack.nombre),
+        rx.table.cell(rack.ip),
+        rx.table.cell(rack.estado)
+    )
 
 
 
@@ -65,19 +64,19 @@ def tablaRack():
     return rx.table.root(
         rx.table.header(
             rx.table.row(
-                rx.table.column_header_cell("rack"),
-                rx.table.column_header_cell("estado"),
+                rx.table.column_header_cell("Nombre"),
+                rx.table.column_header_cell("Ip"),
+                rx.table.column_header_cell("estado")
             ),
+
         ),
-            rx.table.body(
-                rx.foreach(
-                    MainControler.rackLista , constructorRacksTabla,
-                ),
-            ),
-            on_mount=MainControler.cargarRacks,
-
-        )
-
+        rx.table.body(
+            rx.foreach(
+                MainControler.rackLista, tablaRackConstructor,
+            )
+        ),
+        on_mount=MainControler.cargarRacks,
+    )
     
     
 
@@ -86,7 +85,7 @@ def tablaoficinaDash():
         rx.table.header(
             rx.table.row(
                 rx.table.column_header_cell("oficina"),
-                rx.table.column_header_cell("estado"),
+                rx.table.column_header_cell("Cantidad de computadoras"),
             ),
         ),
         

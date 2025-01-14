@@ -24,7 +24,7 @@ def dashboardPage():
             ),
             rx.card(
                rx.center(
-                  rx.heading("Oficina"),   
+                  rx.heading("Lista Oficinas"),   
                ),
                tablaoficinaDash(),
             ),
