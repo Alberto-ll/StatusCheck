@@ -11,6 +11,7 @@ class Direcciones(rx.Model, table=True):
 # Nombre de la oficina
 class Oficinas(rx.Model, table=True):
     nombre:str
+    numeroDispositivos:int
     
 # computadora asociada a una oficina
 class Dispositivo(rx.Model,table=True):

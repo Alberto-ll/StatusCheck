@@ -79,6 +79,11 @@ def tablaRack():
     )
     
     
+def tablaOficinasConstructor(oficina:Oficinas):
+    return rx.table.row(
+        rx.table.cell(oficina.nombre),
+        rx.table.cell(oficina.numeroDispositivos)
+    )
 
 def tablaoficinaDash():
     return rx.table.root(
@@ -88,8 +93,13 @@ def tablaoficinaDash():
                 rx.table.column_header_cell("Cantidad de computadoras"),
             ),
         ),
-        
-    ),
+        rx.table.body(
+            rx.foreach(
+                MainControler.oficinasLista, tablaOficinasConstructor,
+            )
+        ),
+        on_mount=MainControler.oficinasLista,
+    )
     
 def tablalistadoDash():
     return rx.table.root(

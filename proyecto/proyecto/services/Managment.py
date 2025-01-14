@@ -103,11 +103,11 @@ class MainControler(rx.State):
     
     def cargarOficinas(self):
         with rx.session() as session:
-            self.oficinasListai = session.exec(
+            self.oficinasLista = session.exec(
                 Oficinas.select()
             ).all()
             
-    def añadirRack(self,form_data):
+    def altaRack(self,form_data):
         with rx.session() as session:
             session.add(Rack(
                 nombre=form_data["nombre"],
@@ -116,3 +116,12 @@ class MainControler(rx.State):
             ))
             session.commit()
         self.cargarRacks()
+    
+    def altaOficina(self,form_data):
+        with rx.session() as session:
+            session.add(Oficinas(
+                nombre=form_data["nombre"],
+                numeroDispositivos= 0
+            ))
+            session.commit()
+        self.cargarOficinas()

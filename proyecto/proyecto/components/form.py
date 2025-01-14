@@ -58,11 +58,13 @@ def formularioAltaOficina():
                 rx.heading("Alta oficina")
             ),
             rx.input(
-                placeholder="Nombre oficina"    
+                placeholder="Nombre oficina",
+                name="nombre"   
             ),
             
             rx.button(
-                "Cargar"
+            on_submit=MainControler.altaOficina,
+            reset_on_submit=True,
             )
         )
     )
@@ -86,7 +88,7 @@ def formularioAltaRack():
             rx.button(
                 "Cargar",
             ),
-            on_submit=MainControler.añadirRack,
+            on_submit=MainControler.altaRack,
             reset_on_submit=True,
             ),
 
