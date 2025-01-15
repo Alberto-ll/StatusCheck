@@ -1,7 +1,4 @@
-# import reflex as rx
-# import re
-# from ..models.model import Direcciones
-# import subprocess
+
 import asyncio
 import subprocess
 import reflex as rx
@@ -19,6 +16,8 @@ class MainControler(rx.State):
     oficinasLista:list[Oficinas]
     # lista de nombres de oficina para poder mostrarlos en el dashboard
     listaNombresOficinas : list[str]
+
+    #listaDispositivosNoDisponibles:list[Dispositivo]
     
     def defineEstado(self,ip):
         res = subprocess.run(["ping", ip, "-c", "1"],stdout=subprocess.DEVNULL)
@@ -33,6 +32,14 @@ class MainControler(rx.State):
         with rx.session() as session:
             self.dispositivosLista = session.exec(
                 Dispositivo.select()
+            ).all()
+
+    def cargarDispositivosNoDisponibles(self):
+        with rx.session() as session:
+            self.dispositivosLista = session.exec(
+                Dispositivo.select().where(
+                    Dispositivo.estado== False
+                )
             ).all()
     
     def cargarRacks(self):
@@ -71,6 +78,32 @@ class MainControler(rx.State):
             ))
             session.commit()
         self.cargarOficinas()
+
+
+    def altaDispositivo(self,form_data):
+        oficina = form_data["oficina"]
+        with rx.session() as session:
+            session.add(Dispositivo(
+                ip=form_data["ip"],
+                hostname=form_data["hostname"],
+                oficina_id=self.obtenerOficinaID(oficina),
+                estado=self.defineEstado(form_data["ip"]),
+                tipo=form_data["tipo"],
+
+            ))
+            session.commit()
+        self.cargarDispositivos()
+        
+
+    
+    def obtenerOficinaID(self,nombre):
+        with rx.session() as session:
+            oficina = session.exec(
+                Oficinas.select().where(
+                    Oficinas.nombre == nombre
+                )
+            ).first()
+            return oficina.id
         
     # Limpiaa y acddtualiza la lista con los nombres de la oficina
     def cargarlistaNombres(self):

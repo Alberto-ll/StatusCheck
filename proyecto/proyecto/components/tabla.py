@@ -1,10 +1,7 @@
 import reflex as rx
 from ..models.model import Rack, Oficinas, Dispositivo
 from ..services.Managment import MainControler
-#from ..services.ipManagment import Manejador
-#from ..models.model import Direcciones
 
-# Cambiar
 
 def changeIconRack(estado):
     return rx.box(
@@ -18,38 +15,6 @@ def changeIconRack(estado):
             ),
 
     )
-
-
-# def constructorRow(direcciones: Direcciones):
-#    """Show a customer in a table row."""
-#    return rx.table.row(
-#        rx.table.cell(direcciones.sector),
-#        rx.table.cell(direcciones.ip),
-#        rx.table.cell(changeIcon(direcciones.estado)),
-#    )
-
-
-
-
-# def tabla():
-#     return rx.table.root(
-#         rx.table.header(
-#             rx.table.row(
-#                 rx.table.column_header_cell("Sector"),
-#                 rx.table.column_header_cell("ip"),
-#                 rx.table.column_header_cell("estado"),
-#                 rx.table.column_header_cell("Borrrar")
-#             )
-#         ),
-#         rx.table.body(
-#             rx.foreach(
-#                 Manejador.direcciones, constructorRow,
-#             )
-#         ),
-#         on_mount=Manejador.loadIp,
-        
-#     )
-
 
 def tablaRackConstructor(rack:Rack):
     return rx.table.row(
@@ -102,16 +67,32 @@ def tablaoficinaDash():
         ),
         on_mount=MainControler.cargarOficinas
     )
+
+def tablaListadoDispositivosConstructor(dispositivo:Dispositivo):
+    return rx.cond(
+        (~dispositivo.estado),
+        rx.table.row(
+            rx.table.cell(dispositivo.hostname),
+            rx.table.cell(dispositivo.ip),
+        )
+
+    )
     
 def tablalistadoDash():
     return rx.table.root(
         rx.table.header(
             rx.table.row(
                 rx.table.column_header_cell("hostname"),
-                rx.table.column_header_cell("estado"),
+                rx.table.column_header_cell("Ip"),
             ),
-            ),
-            
         ),
+        rx.table.body(
+            rx.foreach(
+                MainControler.dispositivosLista, tablaListadoDispositivosConstructor,
+            )
+        ),
+        on_mount=MainControler.cargarDispositivos,
+        
+    ),
         
     

@@ -18,7 +18,7 @@ class Oficinas(rx.Model, table=True):
 class Dispositivo(rx.Model,table=True):
     hostname:str
     ip:str
-    tipo: int # 1 si es una computadora 2 si es una impresora
+    tipo: str 
     estado:bool
     oficina_id:int
 

@@ -18,7 +18,7 @@ def dashboardPage():
          rx.grid(
             rx.card(
                rx.center(
-                  rx.heading("Raks"),   
+                  rx.heading("Racks"),   
                ),
                tablaRack(),
             ),

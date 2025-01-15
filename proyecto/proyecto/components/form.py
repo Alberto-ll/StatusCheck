@@ -27,13 +27,15 @@ def formulario():
                 rx.select(
                     #recuperar las oficinas de la base de datos y permitir que una sea seleccionada
                     MainControler.listaNombresOficinas,
-                    placeholder="Ingrese Oficina"
+                    placeholder="Ingrese Oficina",
+                    name="oficina",
                     
                     #margin="10px",
                 ),
                 rx.select(
                     ["Impresora","Computadora"],
-                    placeholder="Ingrese tipo de dispositivo:",
+                    placeholder="Ingrese tipo de dispositivo",
+                    name="tipo",
 
                   #margin="10px",
                 ),
@@ -46,9 +48,10 @@ def formulario():
                     
                 ),
                 ),
+
                 align_items="center",
-            #on_submit=Manejador.addIp,
-            #reset_on_submit=True,
+                on_submit=MainControler.altaDispositivo,
+                reset_on_submit=True,
             
         ),
         #size="3"
