@@ -16,6 +16,8 @@ class MainControler(rx.State):
     oficinasLista:list[Oficinas]
     # lista de nombres de oficina para poder mostrarlos en el dashboard
     listaNombresOficinas : list[str]
+    selectorTipo:str
+    selectorOficina:str
 
     #listaDispositivosNoDisponibles:list[Dispositivo]
     
@@ -82,6 +84,8 @@ class MainControler(rx.State):
 
     def altaDispositivo(self,form_data):
         oficina = form_data["oficina"]
+        self.selectorTipo=form_data["tipo"]
+        self.selectorOficina = oficina
         with rx.session() as session:
             session.add(Dispositivo(
                 ip=form_data["ip"],
@@ -93,8 +97,35 @@ class MainControler(rx.State):
             ))
             session.commit()
         self.cargarDispositivos()
+        self.actualizarOficina(self.obtenerOficinaID(oficina),form_data["tipo"])
         
 
+
+    def actualizarOficina(self, oficinaID,tipo):
+        with rx.session() as session:
+            oficina = session.exec(
+                Oficinas.select().where(
+                    Oficinas.id==oficinaID
+                )
+            ).first()
+            if tipo=="Computadora":
+                oficina.computadoras =+ 1
+                
+            elif tipo=="Impresora":
+                oficina.impresoras =+ 1
+            
+            else:
+                rx.window_alert("Carga tipo no posible")
+            
+            session.add(oficina)
+            session.commit()
+        self.cargarOficinas()
+            
+            
+                
+            
+                
+        
     
     def obtenerOficinaID(self,nombre):
         with rx.session() as session:

@@ -6,6 +6,7 @@ from ..services.Managment import MainControler
 
 
 
+
 def formulario():
     return rx.card(
         rx.center(
@@ -23,12 +24,12 @@ def formulario():
                     #margin="10px",
                 ),
             
-                rx.text("Ingrese de que oficina es el dispositivo:"),
                 rx.select(
                     #recuperar las oficinas de la base de datos y permitir que una sea seleccionada
                     MainControler.listaNombresOficinas,
                     placeholder="Ingrese Oficina",
                     name="oficina",
+                    default_value=MainControler.selectorOficina,
                     
                     #margin="10px",
                 ),
@@ -36,6 +37,7 @@ def formulario():
                     ["Impresora","Computadora"],
                     placeholder="Ingrese tipo de dispositivo",
                     name="tipo",
+                    default_value=MainControler.selectorTipo,
 
                   #margin="10px",
                 ),
