@@ -16,11 +16,16 @@ class MainControler(rx.State):
     oficinasLista:list[Oficinas]
     # lista de nombres de oficina para poder mostrarlos en el dashboard
     listaNombresOficinas : list[str]
-    selectorTipo:str
-    selectorOficina:str
-
-    #listaDispositivosNoDisponibles:list[Dispositivo]
+    # Opeciones de tipo de dispositivo
+    listadoTipos:list[str]= ["Computadora","Impresora"]
+    # Valor o eleccion del selector para el tipo de dispositivo
+    selectorTipo:str = ""
+    # Valor o eleccion del selector para la oficina de dispositivo
+    selectorOficina:str = ""
     
+
+
+    # Recibe una ip y verifica que dicha ip tenga ping
     def defineEstado(self,ip):
         res = subprocess.run(["ping", ip, "-c", "1"],stdout=subprocess.DEVNULL)
         if res.returncode == 0:
@@ -36,6 +41,8 @@ class MainControler(rx.State):
                 Dispositivo.select()
             ).all()
 
+
+    # Carga los dispositivos que no se encuentren accesibles por medio de ping
     def cargarDispositivosNoDisponibles(self):
         with rx.session() as session:
             self.dispositivosLista = session.exec(
@@ -44,6 +51,7 @@ class MainControler(rx.State):
                 )
             ).all()
     
+    # Carga los racks desde la base de datos para poder mostrarlo en el front
     def cargarRacks(self):
         with rx.session() as session:
             self.rackLista = session.exec(
@@ -83,24 +91,22 @@ class MainControler(rx.State):
 
 
     def altaDispositivo(self,form_data):
-        oficina = form_data["oficina"]
-        self.selectorTipo=form_data["tipo"]
-        self.selectorOficina = oficina
         with rx.session() as session:
             session.add(Dispositivo(
                 ip=form_data["ip"],
                 hostname=form_data["hostname"],
-                oficina_id=self.obtenerOficinaID(oficina),
+                oficina_id=self.obtenerOficinaID(),
                 estado=self.defineEstado(form_data["ip"]),
-                tipo=form_data["tipo"],
+                tipo=self.selectorTipo,
 
             ))
             session.commit()
-        self.cargarDispositivos()
-        self.actualizarOficina(self.obtenerOficinaID(oficina),form_data["tipo"])
+        
+        self.actualizarOficina(self.obtenerOficinaID(),self.selectorTipo)
+        
         
 
-
+    # Actualiza la oficina luego de hacer el alta de dispositivo (para actualizar los contadores)
     def actualizarOficina(self, oficinaID,tipo):
         with rx.session() as session:
             oficina = session.exec(
@@ -108,41 +114,41 @@ class MainControler(rx.State):
                     Oficinas.id==oficinaID
                 )
             ).first()
-            if tipo=="Computadora":
-                oficina.computadoras =+ 1
+            if tipo =="Computadora":
+                oficina.computadoras = oficina.computadoras + 1
                 
-            elif tipo=="Impresora":
-                oficina.impresoras =+ 1
-            
-            else:
-                rx.window_alert("Carga tipo no posible")
+            else: 
+                oficina.impresoras = oficina.impresoras + 1
             
             session.add(oficina)
             session.commit()
         self.cargarOficinas()
+        self.cargarDispositivos()
+
             
             
                 
             
                 
         
-    
-    def obtenerOficinaID(self,nombre):
+    # Segun lo seleccionado en el alta del dispositivo, devolvera la id de la oficina seleccionada
+    def obtenerOficinaID(self):
         with rx.session() as session:
             oficina = session.exec(
                 Oficinas.select().where(
-                    Oficinas.nombre == nombre
+                    Oficinas.nombre == self.selectorOficina
                 )
             ).first()
             return oficina.id
         
-    # Limpiaa y acddtualiza la lista con los nombres de la oficina
+    # Limpia y actualiza la lista con los nombres de la oficina
     def cargarlistaNombres(self):
         self.listaNombresOficinas.clear()
         for x in self.oficinasLista:
             self.listaNombresOficinas.append(x.nombre)
         
-        
+    
+    # Tarea encargada de hacer el ping cada x tiempo deseado y actualizar el estado
     @rx.event(background=True)
     async def ActualizarEstado(self):
         while True:

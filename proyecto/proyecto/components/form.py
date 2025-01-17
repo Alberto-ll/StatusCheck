@@ -16,11 +16,13 @@ def formulario():
                 rx.input(
                     placeholder="ip",
                     name="ip",
+                    required=True,
                     #margin="10px",
                 ),
                 rx.input(
                     placeholder="hostname",
                     name="hostname",
+                    required=True,
                     #margin="10px",
                 ),
             
@@ -29,15 +31,20 @@ def formulario():
                     MainControler.listaNombresOficinas,
                     placeholder="Ingrese Oficina",
                     name="oficina",
-                    default_value=MainControler.selectorOficina,
+                    value=MainControler.selectorOficina,
+                    on_change= MainControler.set_selectorOficina,
+                    required=True,
                     
                     #margin="10px",
                 ),
                 rx.select(
-                    ["Impresora","Computadora"],
+                    #["Impresora","Computadora"],
+                    MainControler.listadoTipos,
                     placeholder="Ingrese tipo de dispositivo",
                     name="tipo",
-                    default_value=MainControler.selectorTipo,
+                    value=MainControler.selectorTipo,
+                    on_change= MainControler.set_selectorTipo,
+                    required=True,
 
                   #margin="10px",
                 ),
@@ -70,7 +77,8 @@ def formularioAltaOficina():
             rx.form(
             rx.input(
                 placeholder="Nombre oficina",
-                name="nombre"   
+                name="nombre",
+                required=True,
             ),
             
             rx.button(
@@ -93,10 +101,12 @@ def formularioAltaRack():
             rx.input(
                 placeholder="Nombre del rack",
                 name="nombre",
+                required=True,
             ),
             rx.input(
                 placeholder="ip",
                 name="ip",
+                required=True,
             ),
             
             rx.button(
