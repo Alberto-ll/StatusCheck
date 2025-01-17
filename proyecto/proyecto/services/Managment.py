@@ -55,7 +55,7 @@ class MainControler(rx.State):
     def cargarRacks(self):
         with rx.session() as session:
             self.rackLista = session.exec(
-                Rack.select()
+                Rack.select().order_by(Rack.estado)
             ).all()
     
     # Al cargar las oficinas se actualiza la lista 
@@ -128,9 +128,6 @@ class MainControler(rx.State):
             
             
                 
-            
-                
-        
     # Segun lo seleccionado en el alta del dispositivo, devolvera la id de la oficina seleccionada
     def obtenerOficinaID(self):
         with rx.session() as session:
@@ -167,7 +164,30 @@ class MainControler(rx.State):
                             session.add(ra)
                             session.commit()
                     
-            #
-            await asyncio.sleep(5)
             async with self:
                 self.cargarRacks()
+                #self.ActualizarEstadoDispositivos()
+            await asyncio.sleep(15)
+                
+    @rx.event(background=True)
+    async def ActualizarEstadoDispositivos(self):
+        while True:
+            # Actualizacion de estado de los racks
+            async with self:
+                for x in self.dispositivosLista:
+                    estado = self.defineEstado(x.ip)
+                    if estado != x.estado:
+                        with rx.session() as session:
+                            dis = session.exec(
+                                Dispositivo.select().where(
+                                    Dispositivo.ip == x.ip
+                                )
+                            ).first()
+                            dis.estado = estado
+                            session.add(dis)
+                            session.commit()
+                    
+            
+            async with self:
+                self.cargarDispositivos()
+            await asyncio.sleep(5)

@@ -46,7 +46,7 @@ def tablaRack():
     
 def tablaOficinasConstructor(oficina:Oficinas):
     return rx.table.row(
-        rx.table.cell(oficina.nombre),
+        rx.table.cell(rx.link(rx.text(oficina.nombre),href=f"/Informacion/oficina/{oficina.id}/{oficina.nombre}")),
         rx.table.cell(oficina.computadoras),
         rx.table.cell(oficina.impresoras),
     )
@@ -95,4 +95,5 @@ def tablalistadoDash():
         
     ),
         
-    
+
+
