@@ -1,10 +1,21 @@
 import reflex as rx
 from ..components.navbar import nav
-from ..models.model import Dispositivo
+from ..models.model import Dispositivo,Oficinas
 from ..services.Managment import MainControler
 
 
 class StateOficinasDisplay(rx.State):
+    dispositivos:list[Dispositivo]=[]
+
+    
+    def getDispositivo(self):
+        with rx.session() as session:
+            self.dispositivos = session.exec(
+                Dispositivo.select().where(
+                    Dispositivo.oficina_id==self.id
+                )
+            ).all()
+
     ...
     # idOficina:int
     # nombreOficina:str
@@ -23,7 +34,21 @@ class StateOficinasDisplay(rx.State):
         #self.nombreOficina = arg.get("nombre", [])
 
 
-    
+   
+def changeIcon(estado):
+    return rx.box(
+        rx.cond(
+                (estado),
+                rx.icon(tag="cable",color="green")
+            ),
+        rx.cond(
+                (~estado),
+                rx.icon(tag="unplug",color="RED"),
+            ),
+
+    )   
+   
+ 
     
 def tablaOficinaImpresoras():
     return rx.table.root(
@@ -37,14 +62,13 @@ def tablaOficinaImpresoras():
     )
     
 def tablaOficinaComputadorasConstructor(dispositivo:Dispositivo):
-    print(dispositivo.get_value)
-    return rx.cond(
-        # no funciona la validacion
-        (dispositivo.oficina_id == StateOficinasDisplay.id),
-        rx.table.row(
-            rx.table.cell(dispositivo.hostname)
-        ),
-    )
+    return rx.table.row(
+            rx.table.cell(dispositivo.hostname),
+            rx.table.cell(dispositivo.ip),
+            rx.table.cell(changeIcon(dispositivo.estado))
+        )
+
+    
 
 
 
@@ -61,30 +85,33 @@ def tablaOficinaComputadoras():
         ),
         rx.table.body(
             rx.foreach(
-                MainControler.dispositivosLista, tablaOficinaComputadorasConstructor,
+                StateOficinasDisplay.dispositivos, tablaOficinaComputadorasConstructor,
             )
         ),
-        on_mount=MainControler.cargarDispositivos,
+        on_mount=StateOficinasDisplay.getDispositivo,
     )
 
 
+    
 def officedisplay():
     return rx.box(
         nav(),
         rx.center(
-            rx.heading(f"Dispositivos de la Oficina {StateOficinasDisplay.nombre}")
+            rx.heading(f"Dispositivos de {StateOficinasDisplay.nombre}")
         ),
-        rx.spacer(),
-        rx.grid(
-            rx.card(
-                rx.heading("Computadoras"),
-                tablaOficinaComputadoras(),
-            ),
-            rx.card(
-                rx.heading("Impresoras"),
-                tablaOficinaImpresoras()
-            ),
-            columns="2",
+
+            rx.grid(
+            
+                rx.card(
+                    rx.heading("Computadoras"),
+                    tablaOficinaComputadoras(),
+                ),
+                rx.card(
+                    rx.heading("Impresoras"),
+                    tablaOficinaImpresoras()
+                ),
+                columns="2",
         ),
+
         
     )
